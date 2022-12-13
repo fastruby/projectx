@@ -10,7 +10,6 @@ class Project < ApplicationRecord
 
   before_create :add_position
 
-  scope :active, -> { where.not(status: "archived").or(where(status: nil)) }
   scope :parents, -> { where(parent: nil) }
   scope :sub_projects_with_ordered_stories, ->(project_id) {
     where(parent_id: project_id)
@@ -46,20 +45,8 @@ class Project < ApplicationRecord
     end
   end
 
-  def archived?
-    return parent.archived? if parent_id.present?
-
-    status == "archived"
-  end
-
   def breadcrumb
     parent.present? ? "#{parent.breadcrumb} » #{title}" : title
-  end
-
-  def toggle_archived!
-    return unless parent_id.nil?
-
-    archived? ? unarchive : archive
   end
 
   # returns all the sub-projects from its parent's project except self
@@ -89,15 +76,5 @@ class Project < ApplicationRecord
 
     last_position = parent.projects.where.not(position: nil).order(position: :asc).last&.position || 0
     self.position = last_position + 1
-  end
-
-  def archive
-    Project.where(id: id).or(Project.where(parent_id: id)).update_all(status: "archived")
-    self.status = "archived"
-  end
-
-  def unarchive
-    Project.where(id: id).or(Project.where(parent_id: id)).update_all(status: nil)
-    self.status = nil
   end
 end

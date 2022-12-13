@@ -1,11 +1,9 @@
 class ProjectsController < ApplicationController
   before_action :authenticate_user!
-  before_action :find_project, only: [:show, :edit, :update, :sort, :sort_stories, :destroy, :new_sub_project, :toggle_archive, :toggle_locked]
-  before_action :ensure_unarchived!, only: [:edit, :new_sub_project, :update]
+  before_action :find_project, only: [:show, :edit, :update, :sort, :sort_stories, :destroy, :new_sub_project]
 
   def index
-    status = params[:archived] == "true" ? "archived" : nil
-    @projects = Project.where(parent_id: nil, status: status)
+    @projects = Project.parents
   end
 
   def new
@@ -27,19 +25,6 @@ class ProjectsController < ApplicationController
       @project.stories.where(id: id).update_all(position: index + 1)
     end
     head :ok
-  end
-
-  def toggle_archive
-    @project.toggle_archived!
-  end
-
-  # PATCH /projects/1/toggle_locked.js
-  def toggle_locked
-    if @project.locked_at.nil?
-      @project.update(locked_at: Time.current)
-    else
-      @project.update(locked_at: nil)
-    end
   end
 
   def new_clone
@@ -83,7 +68,6 @@ class ProjectsController < ApplicationController
   end
 
   def update
-    authorize(@project)
     if @project.update(projects_params)
       respond_to do |format|
         format.html do

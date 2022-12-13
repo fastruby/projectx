@@ -9,7 +9,7 @@
 
     <div class="field">
       <%= f.label :parent_id %>
-      <%= f.select :parent_id, options_from_collection_for_select(Project.active.parents, :id, :title, selected: @original.parent_id), include_blank: "None" %>
+      <%= f.select :parent_id, options_from_collection_for_select(Project.parents, :id, :title, selected: @original.parent_id), include_blank: "None" %>
     </div>
 
     <% if @original.projects.any? %>

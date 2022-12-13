@@ -18,8 +18,6 @@ Rails.application.routes.draw do
     member do
       patch :sort
       patch :sort_stories
-      patch :toggle_archive
-      patch :toggle_locked
       get :new_clone
       post :clone
     end

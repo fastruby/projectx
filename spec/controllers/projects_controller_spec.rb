@@ -4,7 +4,6 @@ RSpec.describe ProjectsController, type: :controller do
   render_views
 
   let!(:project) { FactoryBot.create(:project, status: nil) }
-  let!(:archived_project) { FactoryBot.create(:project, status: "archived") }
 
   before do
     @request.env["devise.mapping"] = Devise.mappings[:user]
@@ -12,23 +11,13 @@ RSpec.describe ProjectsController, type: :controller do
     sign_in user
   end
 
-  describe "#index without archived params" do
+  describe "#index" do
     before do
       get :index
     end
 
-    it "shows me a list of all the projects" do
+    it "shows a list of all the projects" do
       expect(assigns(:projects)).to eq [project]
-    end
-  end
-
-  describe "#index with archived params" do
-    before do
-      get :index, params: {archived: true}
-    end
-
-    it "shows me a list of all the archived projects" do
-      expect(assigns(:projects)).to eq [archived_project]
     end
   end
 
@@ -141,34 +130,6 @@ RSpec.describe ProjectsController, type: :controller do
       put :update, params: {id: project.id, project: {title: "New Project Title"}}
 
       expect(project.reload.title).to eq "New Project Title"
-    end
-  end
-
-  describe "#toggle_archive" do
-    context "should set the status of the project to" do
-      it "archived when it is unarchived" do
-        put :toggle_archive, params: {id: project.id}, xhr: true
-        expect(assigns[:project]).to be_archived
-      end
-
-      it "nil when it is archived" do
-        put :toggle_archive, params: {id: archived_project.id}, xhr: true
-        expect(assigns[:project]).not_to be_archived
-      end
-    end
-  end
-
-  describe "#toggle_locked" do
-    context "when locking a project" do
-      it "returns a datetime" do
-        patch :toggle_locked, params: {id: project.id}, xhr: true
-        expect(assigns[:project]).to be_locked_at
-      end
-
-      it "returns a js response" do
-        patch :toggle_locked, params: {id: project.id}, xhr: true
-        expect(request.format.symbol).to eq(:js)
-      end
     end
   end
 
