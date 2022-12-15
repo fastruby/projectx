@@ -33,6 +33,5 @@ Rails.application.routes.draw do
       resources :estimates, except: [:index, :show]
       put :move
     end
-    resource :action_plan, only: [:show]
   end
 end
