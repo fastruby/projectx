@@ -18,8 +18,6 @@ Rails.application.routes.draw do
     member do
       patch :sort
       patch :sort_stories
-      get :new_clone
-      post :clone
     end
     get :new_sub_project
 

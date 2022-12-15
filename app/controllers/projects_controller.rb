@@ -27,22 +27,6 @@ class ProjectsController < ApplicationController
     head :ok
   end
 
-  def new_clone
-    @original = Project.includes(:projects, stories: :estimates).find(params[:id])
-  end
-
-  def clone
-    original = Project.includes(stories: :estimates).find(params[:id])
-    clone = Project.create(clone_params)
-    original.clone_stories_into(clone)
-    if clone.parent.nil? && original.projects
-      original.clone_projects_into(clone, only: params[:sub_project_ids])
-    end
-
-    flash[:success] = "Project cloned!"
-    redirect_to "/projects/#{clone.id}"
-  end
-
   def create
     @project = Project.new(projects_params)
     if @project.save
@@ -96,9 +80,5 @@ class ProjectsController < ApplicationController
 
   def projects_params
     params.require(:project).permit(:title, :status, :parent_id)
-  end
-
-  def clone_params
-    params.require(:project).permit(:title, :parent_id)
   end
 end
