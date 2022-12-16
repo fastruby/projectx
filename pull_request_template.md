@@ -14,7 +14,3 @@
 ### Screenshots:
 
 <!-- Add screenshots (applicable to any UI changes) -->
-
----
-
-I will abide by the [code of conduct](https://github.com/fastruby/projectx/blob/main/CODE_OF_CONDUCT.md).

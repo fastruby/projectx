@@ -55,5 +55,3 @@ If the issue has an effect in the frontend, include any relevant screenshots and
 **Logs**
 
 Include relevant log snippets or files here.
-
-**I will abide by the [code of conduct](https://github.com/fastruby/projectx/blob/main/CODE_OF_CONDUCT.md)**
