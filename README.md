@@ -48,6 +48,14 @@ or
 docker-compose up web-next
 ```
 
+### Change Capybara Driver
+
+By default, we are using the Firefox driver to use Google Chrome driver
+follow the instructions below.
+
+Go to `spec/rails_helper.rb`,
+uncomment `selenium_chrome` block and comment `headless_firefox` code block.
+
 ## Admin Users
 
 Users are created without admin privileges by default, because admin users have access to a few more features related to reports and setting real score of stories.
