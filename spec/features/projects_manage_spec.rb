@@ -16,8 +16,10 @@ RSpec.describe "managing projects", js: true do
   it "allows me to add a project" do
     visit root_path
     click_link "Add a Project"
+    expect(page).to have_content "Create New Project"
     fill_in "project[title]", with: "Super Project"
     click_button "Create"
+    expect(page).to have_content "Project created!"
     expect(Project.count).to eq 1
   end
 
@@ -125,9 +127,9 @@ RSpec.describe "managing projects", js: true do
       find("#import-export").click
       page.attach_file("file", (Rails.root + "spec/fixtures/test.csv").to_s)
       click_on "Import"
-      expect(project.stories.count).to be > 1
+      expect(page).to have_content "CSV import was successful"
+      expect(project.stories.count).to be 9
       expect(project.stories.map(&:title).join).to include("php upgrade")
-      expect(page.text).to include("success")
       expect(page.current_path).to eql project_path(project.id)
     end
 
@@ -142,6 +144,7 @@ RSpec.describe "managing projects", js: true do
       find("#import-export").click
       page.attach_file("file", csv_path)
       click_on "Import"
+      expect(page).to have_content "CSV import was successful"
       expect(project.stories.count).to be story_count
       expect(project.stories.map(&:description).join).to_not include("quick")
     end
