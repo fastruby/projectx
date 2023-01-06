@@ -129,7 +129,6 @@ RSpec.describe "managing projects", js: true do
       click_on "Import"
       expect(page).to have_no_content "Import CSV"
       expect(page).to have_content "CSV import was successful"
-      expect(page.text).to include("success")
       expect(project.stories.count).to be 9
       expect(project.stories.map(&:title).join).to include("php upgrade")
       expect(page.current_path).to eql project_path(project.id)
@@ -138,7 +137,7 @@ RSpec.describe "managing projects", js: true do
     it "allows me to update existing stories on import" do
       csv_path = (Rails.root + "tmp/stories.csv").to_s
       story = project.stories.first
-      csv_content = "id,title,description,position\n#{story.id},#{story.title},blank!,#{story.position}"
+      csv_content = "id,title,description,position\n#{story.id},Ruby Upgrade,something,#{story.position}"
       File.write(csv_path, csv_content)
 
       story_count = project.stories.count
@@ -146,8 +145,10 @@ RSpec.describe "managing projects", js: true do
       find("#import-export").click
       page.attach_file("file", csv_path)
       click_on "Import"
-      expect(page).to have_no_content "Import CSV"
-      expect(page).to have_content "CSV import was successful"
+      expect(current_path).to eq project_path(project)
+      expect(page).to have_no_content "Import CSV", wait: 10
+      expect(page).to have_content "Ruby Upgrade", wait: 10
+      expect(page).to have_content "CSV import was successful", wait: 10
       expect(project.stories.count).to be story_count
       expect(project.stories.map(&:description).join).to_not include("quick")
     end
